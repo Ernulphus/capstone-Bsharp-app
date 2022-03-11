@@ -1,11 +1,14 @@
 import { Camera } from "expo-camera";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Button,
   ImageBackground,
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
+  StyleSheet,
+  Platform
 } from "react-native";
 
 export default function App() {
@@ -24,6 +27,11 @@ export default function App() {
   // Reference to the camera
   const cameraRef = useRef(null);
 
+
+  const [imagePadding, setImagePadding] = useState(0);
+  const { height, width } = Dimensions.get('window');
+  const screenRatio = height / width;
+  const [isRatioSet, setIsRatioSet] = useState(false);
 
   if (!status?.granted) { // If status not granted, ask for it
     return (
@@ -85,9 +93,26 @@ export default function App() {
     );
   }
 
+  // Time to make the aspect ratio work! #######################
+  // Figure out the aspect ratio (and orientation) of the screen:
+
+
+
+  // the camera must be loaded in order to
+  // access the supported ratios
+  const setCameraReady = async() => {
+    if (!isRatioSet) {
+      await prepareRatio();
+    }
+  };
+
+  const ratios = await camera.getSupportedRatiosAsync();
+
+  // ###################################
+
   // View for taking a picture - display the preview, a switch camera button, and a shutter button
   return (
-    <Camera style={{ flex: 1 }} type={type} ref={cameraRef}>
+    <Camera style={{ flex: 1 }} type={type} ref={cameraRef} onCameraReady={setCameraReady}>
       <View
         style={{
           flex: 1,
