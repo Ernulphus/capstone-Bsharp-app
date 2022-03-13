@@ -1,11 +1,15 @@
 import { Camera } from "expo-camera";
-import { useRef, useState } from "react";
+import * as ImagePicker from 'expo-image-picker';
+import React, { useRef, useState } from "react";
 import {
   Button,
+  Image,
   ImageBackground,
   Text,
   TouchableOpacity,
   View,
+  Background,
+  Platform,
   StyleSheet
 } from "react-native";
 
@@ -28,6 +32,7 @@ export default function App() {
   const cameraRef = useRef(null);
 
 
+
   if (!status?.granted) { // If status not granted, ask for it
     return (
       <View style={styles.View}>
@@ -39,7 +44,7 @@ export default function App() {
     );
   }
 
-  if (lastPhotoURI !== null) { // If a picture is taken, display the picture with a back button
+  if (lastPhotoURI !== null) { // If a picture is taken or selected, display the picture with a back button
     return (
       <ImageBackground style={styles.ImageBackground}
       source={{ uri: lastPhotoURI }}>
@@ -61,7 +66,26 @@ export default function App() {
     );
   }
 
-  // View for taking a picture - display the preview, a switch camera button, and a shutter button
+  // Image picker function
+  // Need to change aspect ratio
+  const pickImage = async () => {
+    // No permissions request is necessary for launching image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [9,16],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setLastPhotoURI(result.uri);
+    }
+  }
+
+
+  // View for taking a picture - display the preview, a switch camera button, a pick image button, and a shutter button
   return (
     <Camera style={styles.Camera} type={type} ref={cameraRef}>
       <View
@@ -72,6 +96,7 @@ export default function App() {
           justifyContent: "center",
         }}
       >
+
         <TouchableOpacity style={styles.TouchableOpacity}
           onPress={() => {
             setType(
@@ -83,6 +108,7 @@ export default function App() {
         >
           <Text style={styles.button}>🔄</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.TouchableOpacity}
           onPress={async () => {
             if (cameraRef.current) {
@@ -92,6 +118,12 @@ export default function App() {
           }}
         >
           <Text style={styles.button}>⚪️</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.TouchableOpacity}
+          onPress={pickImage}
+        >
+          <Text style={styles.button}>📔</Text>
         </TouchableOpacity>
       </View>
     </Camera>
