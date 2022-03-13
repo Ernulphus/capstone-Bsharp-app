@@ -1,5 +1,6 @@
 import { Camera } from "expo-camera";
-import { useRef, useState } from "react";
+import * as ImagePIcker from 'expo-image-picker';
+import React, { useRef, useState } from "react";
 import {
   Button,
   ImageBackground,
@@ -28,6 +29,7 @@ export default function App() {
   const cameraRef = useRef(null);
 
 
+
   if (!status?.granted) { // If status not granted, ask for it
     return (
       <View style={styles.View}>
@@ -39,7 +41,7 @@ export default function App() {
     );
   }
 
-  if (lastPhotoURI !== null) { // If a picture is taken, display the picture with a back button
+  if (lastPhotoURI !== null) { // If a picture is taken or selected, display the picture with a back button
     return (
       <ImageBackground style={styles.ImageBackground}
       source={{ uri: lastPhotoURI }}>
@@ -60,6 +62,24 @@ export default function App() {
       </ImageBackground>
     );
   }
+
+  // Image picker function
+  const pickImage = async () => {
+    // No permissions request is necessary for launching image library
+    let result = await ImagePicker.launchImageLIbraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All, // may need to change
+      allowsEditing: true,
+      aspect: [4,3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setLastPhotoURI(result.uri);
+    }
+  }
+
 
   // View for taking a picture - display the preview, a switch camera button, and a shutter button
   return (
