@@ -6,7 +6,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StyleSheet
 } from "react-native";
+
+import styles from './Styles.js'
 
 export default function App() {
   // Camera permissions array stored in status
@@ -27,10 +30,8 @@ export default function App() {
 
   if (!status?.granted) { // If status not granted, ask for it
     return (
-      <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
-      >
-        <Text style={{ textAlign: "center" }}>
+      <View style={styles.View}>
+        <Text style={styles.Text}>
           We need access to your camera
         </Text>
         <Button onPress={requestPermission} title="Grant permission" />
@@ -40,46 +41,21 @@ export default function App() {
 
   if (lastPhotoURI !== null) { // If a picture is taken, display the picture with a back button
     return (
-      <ImageBackground
-        source={{ uri: lastPhotoURI }}
-        style={{
-          flex: 1,
-          backgroundColor: "transparent",
-          flexDirection: "row",
-          justifyContent: "center",
-        }}
-      >
-      <TouchableOpacity
-        style={{
-          flex: 0.2,
-          alignSelf: "flex-end",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#666",
-          marginBottom: 40,
-          marginLeft: 20,
-        }}
+      <ImageBackground style={styles.ImageBackground}
+      source={{ uri: lastPhotoURI }}>
+      <TouchableOpacity style={styles.TouchableOpacity}
         onPress={() => {
           setPhotoSentURI(lastPhotoURI);
         }}
       >
-        <Text style={{ fontSize: 30, padding: 10, color: "white" }}>⬆️</Text>
+        <Text style={styles.button}>⬆️</Text>
       </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            flex: 0.2,
-            alignSelf: "flex-end",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#666",
-            marginBottom: 40,
-            marginLeft: 20,
-          }}
-          onPress={() => {
+        <TouchableOpacity style={styles.TouchableOpacity}
+        onPress={() => {
             setLastPhotoURI(null); // Clear the photo
           }}
         >
-          <Text style={{ fontSize: 30, padding: 10, color: "white" }}>❌</Text>
+          <Text style={styles.button}>❌</Text>
         </TouchableOpacity>
       </ImageBackground>
     );
@@ -87,7 +63,7 @@ export default function App() {
 
   // View for taking a picture - display the preview, a switch camera button, and a shutter button
   return (
-    <Camera style={{ flex: 1 }} type={type} ref={cameraRef}>
+    <Camera style={styles.Camera} type={type} ref={cameraRef}>
       <View
         style={{
           flex: 1,
@@ -96,16 +72,7 @@ export default function App() {
           justifyContent: "center",
         }}
       >
-        <TouchableOpacity
-          style={{
-            flex: 0.2,
-            alignSelf: "flex-end",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#666",
-            marginBottom: 40,
-            marginLeft: 20,
-          }}
+        <TouchableOpacity style={styles.TouchableOpacity}
           onPress={() => {
             setType(
               type === Camera.Constants.Type.back
@@ -114,18 +81,9 @@ export default function App() {
             );
           }}
         >
-          <Text style={{ fontSize: 30, padding: 10, color: "white" }}>🔄</Text>
+          <Text style={styles.button}>🔄</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            flex: 0.2,
-            alignSelf: "flex-end",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#666",
-            marginBottom: 40,
-            marginLeft: 20,
-          }}
+        <TouchableOpacity style={styles.TouchableOpacity}
           onPress={async () => {
             if (cameraRef.current) {
               let photo = await cameraRef.current.takePictureAsync();
@@ -133,7 +91,7 @@ export default function App() {
             }
           }}
         >
-          <Text style={{ fontSize: 30, padding: 10, color: "white" }}>⚪️</Text>
+          <Text style={styles.button}>⚪️</Text>
         </TouchableOpacity>
       </View>
     </Camera>
