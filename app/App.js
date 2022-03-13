@@ -1,12 +1,15 @@
 import { Camera } from "expo-camera";
-import * as ImagePIcker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useRef, useState } from "react";
 import {
   Button,
+  Image,
   ImageBackground,
   Text,
   TouchableOpacity,
   View,
+  Background,
+  Platform,
   StyleSheet
 } from "react-native";
 
@@ -64,12 +67,13 @@ export default function App() {
   }
 
   // Image picker function
+  // Need to change aspect ratio
   const pickImage = async () => {
     // No permissions request is necessary for launching image library
-    let result = await ImagePicker.launchImageLIbraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All, // may need to change
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4,3],
+      aspect: [9,16],
       quality: 1,
     });
 
@@ -81,7 +85,7 @@ export default function App() {
   }
 
 
-  // View for taking a picture - display the preview, a switch camera button, and a shutter button
+  // View for taking a picture - display the preview, a switch camera button, a pick image button, and a shutter button
   return (
     <Camera style={styles.Camera} type={type} ref={cameraRef}>
       <View
@@ -92,6 +96,7 @@ export default function App() {
           justifyContent: "center",
         }}
       >
+
         <TouchableOpacity style={styles.TouchableOpacity}
           onPress={() => {
             setType(
@@ -103,6 +108,7 @@ export default function App() {
         >
           <Text style={styles.button}>🔄</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.TouchableOpacity}
           onPress={async () => {
             if (cameraRef.current) {
@@ -112,6 +118,12 @@ export default function App() {
           }}
         >
           <Text style={styles.button}>⚪️</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.TouchableOpacity}
+          onPress={pickImage}
+        >
+          <Text style={styles.button}>📔</Text>
         </TouchableOpacity>
       </View>
     </Camera>
