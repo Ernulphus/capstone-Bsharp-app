@@ -31,6 +31,7 @@ export default function App() {
   // Reference to the camera
   const cameraRef = useRef(null);
 
+  const serveraddress = 'http://localhost:3000/'
 
 
   if (!status?.granted) { // If status not granted, ask for it
@@ -81,6 +82,19 @@ export default function App() {
 
     if (!result.cancelled) {
       setLastPhotoURI(result.uri);
+    }
+
+
+  // Image sender function
+  const sendImage = async () => {
+    fetch(serveraddr, {
+      method: 'POST',
+      headers: {
+
+      }
+      body: JSON.stringify({
+        image: lastPhotoURI
+      })
     }
   }
 
