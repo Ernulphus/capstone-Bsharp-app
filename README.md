@@ -9,3 +9,6 @@
 <hr />
 
 This repo holds code for the front end of the project and is written in JavaScript using the React Native framework.
+
+[Back End](https://github.com/Ernulphus/capstone-Bsharp-server)  
+[AI Model](https://github.com/Ernulphus/capstone-Bsharp-AI)
