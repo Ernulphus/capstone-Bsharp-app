@@ -25,15 +25,16 @@ export default function App() {
   // State for the location of the last photo
   const [lastPhotoURI, setLastPhotoURI] = useState(null);
 
-  // State for result of sending image to backend
-  const [photoSentURI, setPhotoSentURI] = useState(null);
+  // State for storing the photo to be sent to backend
+  const [photoSentURL, setPhotoSentURL] = useState(null);
 
   // Reference to the camera
   const cameraRef = useRef(null);
 
+  const serveraddress = 'http://192.168.4.20:3000/'
 
-
-  if (!status?.granted) { // If status not granted, ask for it
+  // If camera access not granted, ask for it
+  if (!status?.granted) {
     return (
       <View style={styles.View}>
         <Text style={styles.Text}>
@@ -44,13 +45,32 @@ export default function App() {
     );
   }
 
-  if (lastPhotoURI !== null) { // If a picture is taken or selected, display the picture with a back button
+  // Image sender function
+  const sendImage = async () => {
+    // Save image as a blob, convert to data URL
+    let reader = new FileReader();
+    const response = await fetch(lastPhotoURI)
+      // .catch(error => console.error(error));
+    const imgblob = await response.blob();
+    console.log(imgblob);
+
+    // Send data URL of image to backend with fetch
+    fetch(serveraddress, {
+      method: 'POST',
+      body: imgblob
+    })
+      .then (r => console.log("Sent!"))
+      .catch(error    => console.error(error));
+  }
+
+  // If a picture is taken or selected, display the picture with a back button
+  if (lastPhotoURI !== null) {
     return (
       <ImageBackground style={styles.ImageBackground}
       source={{ uri: lastPhotoURI }}>
       <TouchableOpacity style={styles.TouchableOpacity}
         onPress={() => {
-          setPhotoSentURI(lastPhotoURI);
+          sendImage();
         }}
       >
         <Text style={styles.button}>⬆️</Text>
