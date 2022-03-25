@@ -31,7 +31,7 @@ export default function App() {
   // Reference to the camera
   const cameraRef = useRef(null);
 
-  const serveraddress = 'http://192.168.4.20:3000/'
+  const serveraddress = 'http://146.95.72.151:3000/'
 
   // If camera access not granted, ask for it
   if (!status?.granted) {
@@ -47,20 +47,21 @@ export default function App() {
 
   // Image sender function
   const sendImage = async () => {
-    // Save image as a blob, convert to data URL
-    let reader = new FileReader();
-    const response = await fetch(lastPhotoURI)
-      // .catch(error => console.error(error));
-    const imgblob = await response.blob();
-    console.log(imgblob);
+    // // Save image as a blob
+    // let reader = new FileReader();
+    // const response = await fetch(lastPhotoURI.replace("file:///","file://"))
+    // .catch(error => console.error(error))
+    //
+    // const imgblob = await response.blob();
 
     // Send data URL of image to backend with fetch
-    fetch(serveraddress, {
+    const res = await fetch(serveraddress, {
       method: 'POST',
-      body: imgblob
+      // body: JSON.stringify(imgblob)
+      body: JSON.stringify({
+        text: "This is in JSON"
+      })
     })
-      .then (r => console.log("Sent!"))
-      .catch(error    => console.error(error));
   }
 
   // If a picture is taken or selected, display the picture with a back button
