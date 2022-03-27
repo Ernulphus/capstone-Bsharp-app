@@ -47,20 +47,21 @@ export default function App() {
 
   // Image sender function
   const sendImage = async () => {
-    // Save image as a blob, convert to data URL
-    let reader = new FileReader();
-    const response = await fetch(lastPhotoURI)
-      // .catch(error => console.error(error));
+    //Save image as a blob
+    const response = await fetch(lastPhotoURI);
+
     const imgblob = await response.blob();
-    console.log(imgblob);
+    let img = JSON.stringify(imgblob);
 
     // Send data URL of image to backend with fetch
-    fetch(serveraddress, {
+    const res = await fetch(serveraddress, {
       method: 'POST',
-      body: imgblob
+      body: JSON.stringify(img)
+      // body: JSON.stringify({
+      //   text: "This is in JSON"
+      // })
     })
-      .then (r => console.log("Sent!"))
-      .catch(error    => console.error(error));
+    console.log("done");
   }
 
   // If a picture is taken or selected, display the picture with a back button
