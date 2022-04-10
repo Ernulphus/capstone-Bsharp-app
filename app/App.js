@@ -57,9 +57,6 @@ export default function App() {
     const res = await fetch(serveraddress, {
       method: 'POST',
       body: JSON.stringify(img)
-      // body: JSON.stringify({
-      //   text: "This is in JSON"
-      // })
     })
     console.log("done");
   }
