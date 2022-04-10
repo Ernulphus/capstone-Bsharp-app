@@ -51,10 +51,10 @@ export default function App() {
   // Image sender function
   const sendImage = async () => {
     // Lock out user spam
-    // if (photoSentURI == lastPhotoURI)
-    //   return;
-    //
-    // setPhotoSentURI(lastPhotoURI);
+    if (photoSentURI == lastPhotoURI)
+      return;
+
+    setPhotoSentURI(lastPhotoURI);
 
     //Save image as a blob and stringify it
     const response = await fetch(lastPhotoURI);
@@ -76,8 +76,6 @@ export default function App() {
   if (imageGuess !== null) {
     return (
       <View style={styles.View}>
-        <Image style={styles.Image} source={{ uri: photoSentURI }}>
-        </Image>
         <Text style={styles.Text}>
           B♯'s cutting-edge futuristic AI has this to say about your image:
         </Text>
@@ -127,7 +125,7 @@ export default function App() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [9,16],
+      aspect: [16,16],
       quality: 1,
     });
 
