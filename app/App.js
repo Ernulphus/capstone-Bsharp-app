@@ -26,7 +26,7 @@ export default function App() {
   const [lastPhotoURI, setLastPhotoURI] = useState(null);
 
   // State for storing the photo to be sent to backend
-  const [photoSentURL, setPhotoSentURL] = useState(null);
+  const [photoSentURI, setPhotoSentURI] = useState(null);
 
   // Reference to the camera
   const cameraRef = useRef(null);
@@ -47,21 +47,32 @@ export default function App() {
 
   // Image sender function
   const sendImage = async () => {
-    //Save image as a blob
-    const response = await fetch(lastPhotoURI);
+    // Lock out user spam
+    // if (photoSentURI == lastPhotoURI)
+    //   return;
+    //
+    // setPhotoSentURI(lastPhotoURI);
 
+    //Save image as a blob and stringify it
+    const response = await fetch(lastPhotoURI);
     const imgblob = await response.blob();
     let img = JSON.stringify(imgblob);
 
-    // Send data URL of image to backend with fetch
+    // Send blob of image to backend with fetch
     const res = await fetch(serveraddress, {
       method: 'POST',
-      body: JSON.stringify(img)
-      // body: JSON.stringify({
-      //   text: "This is in JSON"
-      // })
+      body: img
     })
-    console.log("done");
+
+    for (let key in res) {
+      console.log(key);
+      console.log(res[key]);
+      console.log(" ");
+    }
+    console.log(res.statusText);
+
+    if (res.ok)
+      return res.body;
   }
 
   // If a picture is taken or selected, display the picture with a back button
@@ -69,6 +80,7 @@ export default function App() {
     return (
       <ImageBackground style={styles.ImageBackground}
       source={{ uri: lastPhotoURI }}>
+
       <TouchableOpacity style={styles.TouchableOpacity}
         onPress={() => {
           sendImage();
@@ -76,13 +88,14 @@ export default function App() {
       >
         <Text style={styles.button}>⬆️</Text>
       </TouchableOpacity>
-        <TouchableOpacity style={styles.TouchableOpacity}
-        onPress={() => {
-            setLastPhotoURI(null); // Clear the photo
-          }}
-        >
-          <Text style={styles.button}>❌</Text>
-        </TouchableOpacity>
+
+      <TouchableOpacity style={styles.TouchableOpacity}
+      onPress={() => {
+          setLastPhotoURI(null); // Clear the photo
+        }}
+      >
+        <Text style={styles.button}>❌</Text>
+      </TouchableOpacity>
       </ImageBackground>
     );
   }
