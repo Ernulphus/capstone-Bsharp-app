@@ -26,7 +26,10 @@ export default function App() {
   const [lastPhotoURI, setLastPhotoURI] = useState(null);
 
   // State for storing the photo to be sent to backend
-  const [photoSentURL, setPhotoSentURL] = useState(null);
+  const [photoSentURI, setPhotoSentURI] = useState(null);
+
+  // State for storing instrument guess
+  const [imageGuess, setImageGuess] = useState(null);
 
   // Reference to the camera
   const cameraRef = useRef(null);
@@ -47,21 +50,47 @@ export default function App() {
 
   // Image sender function
   const sendImage = async () => {
-    //Save image as a blob
-    const response = await fetch(lastPhotoURI);
+    // Lock out user spam
+    if (photoSentURI == lastPhotoURI)
+      return;
 
+    setPhotoSentURI(lastPhotoURI);
+
+    //Save image as a blob and stringify it
+    const response = await fetch(lastPhotoURI);
     const imgblob = await response.blob();
     let img = JSON.stringify(imgblob);
 
-    // Send data URL of image to backend with fetch
+    // Send blob of image to backend with fetch
     const res = await fetch(serveraddress, {
       method: 'POST',
-      body: JSON.stringify(img)
-      // body: JSON.stringify({
-      //   text: "This is in JSON"
-      // })
+      body: img
     })
-    console.log("done");
+
+    let guess = res.headers.map.guess;
+    setImageGuess(guess);
+    console.log(guess);
+  }
+
+  // If an image guess is received, display it
+  if (imageGuess !== null) {
+    return (
+      <View style={styles.View}>
+        <Text style={styles.Text}>
+          B♯'s cutting-edge futuristic AI has this to say about your image:
+        </Text>
+        <Text style={styles.Text}>
+          "{imageGuess}"
+        </Text>
+        <Button style={styles.Button}
+        onPress={() => {
+            setLastPhotoURI(null);  // Clear taken photo
+            setPhotoSentURI(null);  // Clear sent photo
+            setImageGuess(null);    // Clear guess
+          }}
+        title="❌"/>
+      </View>
+    )
   }
 
   // If a picture is taken or selected, display the picture with a back button
@@ -69,6 +98,7 @@ export default function App() {
     return (
       <ImageBackground style={styles.ImageBackground}
       source={{ uri: lastPhotoURI }}>
+
       <TouchableOpacity style={styles.TouchableOpacity}
         onPress={() => {
           sendImage();
@@ -76,13 +106,14 @@ export default function App() {
       >
         <Text style={styles.button}>⬆️</Text>
       </TouchableOpacity>
-        <TouchableOpacity style={styles.TouchableOpacity}
-        onPress={() => {
-            setLastPhotoURI(null); // Clear the photo
-          }}
-        >
-          <Text style={styles.button}>❌</Text>
-        </TouchableOpacity>
+
+      <TouchableOpacity style={styles.TouchableOpacity}
+      onPress={() => {
+          setLastPhotoURI(null); // Clear the photo
+        }}
+      >
+        <Text style={styles.button}>❌</Text>
+      </TouchableOpacity>
       </ImageBackground>
     );
   }
@@ -94,7 +125,7 @@ export default function App() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [9,16],
+      aspect: [16,16],
       quality: 1,
     });
 

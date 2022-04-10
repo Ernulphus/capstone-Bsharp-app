@@ -8,6 +8,7 @@ export default StyleSheet.create({
     alignContent: "center"
   },
   Text: {
+    flex: 0.1,
     textAlign: "center"
   },
   ImageBackground: {
@@ -33,6 +34,11 @@ export default StyleSheet.create({
   Camera: {
     flex: 1
   },
-
+  Image: {
+    flex: 0.5,
+    width: 50,
+    height: 200,
+    resizeMode: "stretch"
+  }
 
 });
