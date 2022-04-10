@@ -64,15 +64,10 @@ export default function App() {
       body: img
     })
 
-    for (let key in res) {
-      console.log(key);
-      console.log(res[key]);
-      console.log(" ");
-    }
-    console.log(res.statusText);
+    let guess = res.headers.map.guess;
+    console.log(guess);
 
-    if (res.ok)
-      return res.body;
+    return guess;
   }
 
   // If a picture is taken or selected, display the picture with a back button
