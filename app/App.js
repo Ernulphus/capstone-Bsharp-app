@@ -28,6 +28,9 @@ export default function App() {
   // State for storing the photo to be sent to backend
   const [photoSentURI, setPhotoSentURI] = useState(null);
 
+  // State for storing instrument guess
+  const [imageGuess, setImageGuess] = useState(null);
+
   // Reference to the camera
   const cameraRef = useRef(null);
 
@@ -65,9 +68,31 @@ export default function App() {
     })
 
     let guess = res.headers.map.guess;
+    setImageGuess(guess);
     console.log(guess);
+  }
 
-    return guess;
+  // If an image guess is received, display it
+  if (imageGuess !== null) {
+    return (
+      <View style={styles.View}>
+        <Image style={styles.Image} source={{ uri: photoSentURI }}>
+        </Image>
+        <Text style={styles.Text}>
+          B♯'s cutting-edge futuristic AI has this to say about your image:
+        </Text>
+        <Text style={styles.Text}>
+          "{imageGuess}"
+        </Text>
+        <Button style={styles.Button}
+        onPress={() => {
+            setLastPhotoURI(null);  // Clear taken photo
+            setPhotoSentURI(null);  // Clear sent photo
+            setImageGuess(null);    // Clear guess
+          }}
+        title="❌"/>
+      </View>
+    )
   }
 
   // If a picture is taken or selected, display the picture with a back button

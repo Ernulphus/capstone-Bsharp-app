@@ -33,6 +33,9 @@ export default StyleSheet.create({
   Camera: {
     flex: 1
   },
-
+  Image: {
+    flex: 1,
+    width: 0.3
+  }
 
 });
