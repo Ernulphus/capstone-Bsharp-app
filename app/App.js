@@ -42,29 +42,7 @@ export default function App() {
 
   const serveraddress = 'http://146.95.74.91:3000/'
 
-  /* Views */
-
-  // Title screen
-  if (!takePicture) {
-    return (
-      <View style={styles.View}>
-      </View>
-      // JSX for title page goes here
-      // Needs a "get started" button which sets takePicture to true
-    );
-  }
-
-  // If camera access not granted, ask for it
-  if (!status?.granted) {
-    return (
-      <View style={styles.View}>
-        <Text style={styles.Text}>
-          We need access to your camera
-        </Text>
-        <Button onPress={requestPermission} title="Grant permission" />
-      </View>
-    );
-  }
+  /* Helper Functions */
 
   // Image sender function
   const sendImage = async () => {
@@ -88,6 +66,48 @@ export default function App() {
     let guess = res.headers.map.guess;
     setImageGuess(guess);
     console.log(guess);
+  }
+
+  // Image picker function
+  // Need to change aspect ratio
+  const pickImage = async () => {
+    // No permissions request is necessary for launching image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [16,16],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setLastPhotoURI(result.uri);
+    }
+  }
+
+  /* Views */
+
+  // Title screen
+  if (!takePicture) {
+    return (
+      <View style={styles.View}>
+      </View>
+      // JSX for title page goes here
+      // Needs a "get started" button which sets takePicture to true
+    );
+  }
+
+  // If camera access not granted, ask for it
+  if (!status?.granted) {
+    return (
+      <View style={styles.View}>
+        <Text style={styles.Text}>
+          We need access to your camera
+        </Text>
+        <Button onPress={requestPermission} title="Grant permission" />
+      </View>
+    );
   }
 
   // If an image guess is received, display it
@@ -135,25 +155,6 @@ export default function App() {
       </ImageBackground>
     );
   }
-
-  // Image picker function
-  // Need to change aspect ratio
-  const pickImage = async () => {
-    // No permissions request is necessary for launching image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [16,16],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setLastPhotoURI(result.uri);
-    }
-  }
-
 
   // View for taking a picture - display the preview, a switch camera button, a pick image button, and a shutter button
   return (
