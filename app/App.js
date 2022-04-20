@@ -16,6 +16,8 @@ import {
 import styles from './Styles.js'
 
 export default function App() {
+  /* State variables */
+
   // Camera permissions array stored in status
   const [status, requestPermission] = Camera.useCameraPermissions();
 
@@ -34,7 +36,23 @@ export default function App() {
   // Reference to the camera
   const cameraRef = useRef(null);
 
-  const serveraddress = 'http://192.168.4.20:3000/'
+  // State for getting past home page
+  const [takePicture, setTakePicture] = useState(false);
+  // setTakePicture(true); will update takePicture to true and reload
+
+  const serveraddress = 'http://146.95.74.91:3000/'
+
+  /* Views */
+
+  // Title screen
+  if (!takePicture) {
+    return (
+      <View style={styles.View}>
+      </View>
+      // JSX for title page goes here
+      // Needs a "get started" button which sets takePicture to true
+    );
+  }
 
   // If camera access not granted, ask for it
   if (!status?.granted) {
