@@ -73,8 +73,8 @@ export default function App() {
         },
       });
 
-      if (res.data.success) {
-        let guess = res.headers.map.guess;
+      if (res) {
+        let guess = res.headers.guess;
         setImageGuess(guess);
         console.log(guess);
       }
