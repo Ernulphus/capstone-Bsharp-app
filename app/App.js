@@ -42,7 +42,8 @@ export default function App() {
   const [takePicture, setTakePicture] = useState(false);
   // setTakePicture(true); will update takePicture to true and reload
 
-  const serveraddress = 'http://161.35.48.44:3000/'
+  // const serveraddress = 'http://161.35.48.44:3000/' // Digital Ocean Droplet
+  const serveraddress = 'http://192.168.4.20:3000/' // Boaz's laptop
   const server = axios.create({ baseURL: serveraddress });
 
   /* Helper Functions */
@@ -60,7 +61,7 @@ export default function App() {
     formData.append('submission', {
       name: new Date() + '_submission',
       uri: lastPhotoURI,
-      type: 'image/jpg',
+      type: 'image/jpg'
     });
 
     // Send to server (async)
