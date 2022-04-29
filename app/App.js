@@ -89,14 +89,14 @@ export default function App() {
   /* Views */
 
   // Title screen
-  if (!takePicture) {
-    return (
-      <View style={styles.View}>
-      </View>
-      // JSX for title page goes here
-      // Needs a "get started" button which sets takePicture to true
-    );
-  }
+  // if (!takePicture) {
+  //   return (
+  //     <View style={styles.View}>
+  //     </View>
+  //     // JSX for title page goes here
+  //     // Needs a "get started" button which sets takePicture to true
+  //   );
+  // }
 
   // If camera access not granted, ask for it
   if (!status?.granted) {
