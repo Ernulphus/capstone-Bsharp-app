@@ -13,9 +13,13 @@ import {
   StyleSheet
 } from "react-native";
 
+import axios from 'axios';
+
 import styles from './Styles.js'
 
 export default function App() {
+  /* State variables */
+
   // Camera permissions array stored in status
   const [status, requestPermission] = Camera.useCameraPermissions();
 
@@ -34,7 +38,93 @@ export default function App() {
   // Reference to the camera
   const cameraRef = useRef(null);
 
-  const serveraddress = 'http://192.168.4.20:3000/'
+  // State for getting past home page
+  const [takePicture, setTakePicture] = useState(false);
+  // setTakePicture(true); will update takePicture to true and reload
+
+  // const serveraddress = 'http://161.35.48.44:3000/' // Digital Ocean Droplet
+  const serveraddress = 'http://192.168.4.20:3000/' // Boaz's laptop
+  const server = axios.create({ baseURL: serveraddress });
+
+  /* Helper Functions */
+
+  // Image sender function
+  const sendImage = async () => {
+    // Lock out user spam
+    if (photoSentURI == lastPhotoURI)
+      return;
+
+    setPhotoSentURI(lastPhotoURI);
+
+    // Create form data to send to server; append the user's submission
+    const formData = new FormData();
+    formData.append('submission', {
+      name: new Date() + '_submission',
+      uri: lastPhotoURI,
+      type: 'image/jpg'
+    });
+
+    // Send to server (async)
+    try {
+      const res = await server.post('/', formData, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data'
+        },
+      });
+
+      if (res) {
+        let guess = res.headers.guess;
+        setImageGuess(guess);
+        console.log(guess);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    // //Save image as a blob and stringify it
+    // const response = await fetch(lastPhotoURI);
+    // const imgblob = await response.blob();
+    // let img = JSON.stringify(imgblob);
+    //
+    // // Send blob of image to backend with fetch
+    // const res = await fetch(serveraddress, {
+    //   method: 'POST',
+    //   body: img
+    // })
+
+
+  }
+
+  // Image picker function
+  // Need to change aspect ratio
+  const pickImage = async () => {
+    // No permissions request is necessary for launching image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [16,16],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setLastPhotoURI(result.uri);
+    }
+  }
+
+  /* Views */
+
+  // Title screen
+  // if (!takePicture) {
+  //   return (
+  //     <View style={styles.View}>
+  //     </View>
+  //     // JSX for title page goes here
+  //     // Needs a "get started" button which sets takePicture to true
+  //   );
+  // }
 
   // If camera access not granted, ask for it
   if (!status?.granted) {
@@ -46,30 +136,6 @@ export default function App() {
         <Button onPress={requestPermission} title="Grant permission" />
       </View>
     );
-  }
-
-  // Image sender function
-  const sendImage = async () => {
-    // Lock out user spam
-    if (photoSentURI == lastPhotoURI)
-      return;
-
-    setPhotoSentURI(lastPhotoURI);
-
-    //Save image as a blob and stringify it
-    const response = await fetch(lastPhotoURI);
-    const imgblob = await response.blob();
-    let img = JSON.stringify(imgblob);
-
-    // Send blob of image to backend with fetch
-    const res = await fetch(serveraddress, {
-      method: 'POST',
-      body: img
-    })
-
-    let guess = res.headers.map.guess;
-    setImageGuess(guess);
-    console.log(guess);
   }
 
   // If an image guess is received, display it
@@ -117,25 +183,6 @@ export default function App() {
       </ImageBackground>
     );
   }
-
-  // Image picker function
-  // Need to change aspect ratio
-  const pickImage = async () => {
-    // No permissions request is necessary for launching image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [16,16],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setLastPhotoURI(result.uri);
-    }
-  }
-
 
   // View for taking a picture - display the preview, a switch camera button, a pick image button, and a shutter button
   return (
