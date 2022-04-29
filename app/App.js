@@ -40,7 +40,7 @@ export default function App() {
   const [takePicture, setTakePicture] = useState(false);
   // setTakePicture(true); will update takePicture to true and reload
 
-  const serveraddress = 'http://146.95.74.91:3000/'
+  const serveraddress = 'http://161.35.48.44:3000/'
 
   /* Helper Functions */
 
