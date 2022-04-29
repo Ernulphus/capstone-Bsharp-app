@@ -13,6 +13,8 @@ import {
   StyleSheet
 } from "react-native";
 
+import axios from 'axios';
+
 import styles from './Styles.js'
 
 export default function App() {
@@ -41,6 +43,7 @@ export default function App() {
   // setTakePicture(true); will update takePicture to true and reload
 
   const serveraddress = 'http://161.35.48.44:3000/'
+  const server = axios.create({ baseURL: serveraddress });
 
   /* Helper Functions */
 
@@ -52,20 +55,44 @@ export default function App() {
 
     setPhotoSentURI(lastPhotoURI);
 
-    //Save image as a blob and stringify it
-    const response = await fetch(lastPhotoURI);
-    const imgblob = await response.blob();
-    let img = JSON.stringify(imgblob);
+    // Create form data to send to server; append the user's submission
+    const formData = new FormData();
+    formData.append('submission', {
+      name: new Date() + '_submission',
+      uri: lastPhotoURI,
+      type: 'image/jpg',
+    });
 
-    // Send blob of image to backend with fetch
-    const res = await fetch(serveraddress, {
-      method: 'POST',
-      body: img
-    })
+    // Send to server (async)
+    try {
+      const res = await server.post('/', formData, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data'
+        },
+      });
 
-    let guess = res.headers.map.guess;
-    setImageGuess(guess);
-    console.log(guess);
+      if (res.data.success) {
+        let guess = res.headers.map.guess;
+        setImageGuess(guess);
+        console.log(guess);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    // //Save image as a blob and stringify it
+    // const response = await fetch(lastPhotoURI);
+    // const imgblob = await response.blob();
+    // let img = JSON.stringify(imgblob);
+    //
+    // // Send blob of image to backend with fetch
+    // const res = await fetch(serveraddress, {
+    //   method: 'POST',
+    //   body: img
+    // })
+
+
   }
 
   // Image picker function
