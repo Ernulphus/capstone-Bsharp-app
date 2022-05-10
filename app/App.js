@@ -216,7 +216,7 @@ export default function App() {
             }
           }}
         >
-          <Text style={styles.button}>⚪️</Text>
+          <Text style={styles.button}>🔴</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.TouchableOpacity}
