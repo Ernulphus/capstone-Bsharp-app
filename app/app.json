@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Bsharp",
+    "slug": "bsharp",
+    "android": {
+      "package": "com.ernulphus.bsharp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.ernulphus.bsharp"
+    }
+  }
+}

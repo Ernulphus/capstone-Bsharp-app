@@ -81,19 +81,6 @@ export default function App() {
     } catch (error) {
       console.log(error.message);
     }
-
-    // //Save image as a blob and stringify it
-    // const response = await fetch(lastPhotoURI);
-    // const imgblob = await response.blob();
-    // let img = JSON.stringify(imgblob);
-    //
-    // // Send blob of image to backend with fetch
-    // const res = await fetch(serveraddress, {
-    //   method: 'POST',
-    //   body: img
-    // })
-
-
   }
 
   // Image picker function
@@ -138,7 +125,7 @@ export default function App() {
     );
   }
 
-  // If an image guess is received, display it
+  // If an image guess is received, display it with a back button
   if (imageGuess !== null) {
     return (
       <View style={styles.View}>
@@ -175,6 +162,9 @@ export default function App() {
 
       <TouchableOpacity style={styles.TouchableOpacity}
       onPress={() => {
+        // SECURITY ISSUE TO FIX: this should be conditional
+        // so the user can't just send, exit, take photo, send on repeat
+        // without waiting for the guess response
           setLastPhotoURI(null); // Clear the photo
         }}
       >
